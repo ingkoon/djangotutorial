@@ -2,12 +2,13 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
 from quickstart.serializers import UserSerializer, GroupSerializer
-
+from rest_framework.authentication import BasicAuthentication
 
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
+    authentication_classes = [BasicAuthentication]
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
