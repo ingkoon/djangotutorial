@@ -7,35 +7,34 @@ from rest_framework import status
 from .models import User
 from .serializers import UserSerializer
 
-
-# Create your views here.
 # CBV(class base view)타입으로 뷰 정의
-
 class UserListAPI(APIView): # 유저리스트 확인 API
     def get(self, request):
         queryset = User.objects.all()
         print(queryset)
-        serializer = UserSerializer(queryset, many=True)
+        serializer = UserSerializer(queryset, many=True)        
         return Response(serializer.data)
 
 class UserAPI(APIView): #유저 정보 확인 API
     # 유저 데이터를 저장하는 API
     def post(self, request):
-        query = UserSerializer(data = request.data)        
-        print("good post1")
+        query = UserSerializer(data = request.data)                
         if query.is_valid():
             query.save()
-            print("good post2")
+            print(query)
             return Response(query.data, status=status.HTTP_201_CREATED)
         else:
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
-    # 특정 포스트를 들고오는 API
+    # 특정 포스트를 가져오는 API
     def get(self, request, nickname):
-        query = User.objects.get(nickname = nickname)     
-        print(query.id)            
-        serializer = UserSerializer(query)         
-        return Response(serializer.data)
+        if User.objects.get(nickname = nickname) is None:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+        else:            
+            query = User.objects.get(nickname = nickname)     
+            print(query.id)            
+            serializer = UserSerializer(query)         
+            return Response(serializer.data)
 
     # 유저 데이터 수정 API
     def put(self, request, nickname):
