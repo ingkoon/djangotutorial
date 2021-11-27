@@ -52,10 +52,13 @@ class UserAPI(APIView): #유저 정보 확인 API
 
     # 유저 데이터 삭제 API
     def delete(self, request, nickname):
-        query = User.objects.get(nickname = nickname)
-        query.delete()
-        print("delete user data", query)
-        return Response("Delete test Ok",stauts = 200)
+        if User.objects.get(nickname = nickname) is None:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+        else:
+            query = User.objects.get(nickname = nickname)
+            query.delete()
+            print("delete user data", query)
+            return Response("Delete test Ok",stauts = 200)
           
         
         
